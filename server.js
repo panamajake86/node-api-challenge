@@ -7,6 +7,7 @@ const server = express();
 server.use(express.json());
 server.use(helmet());
 server.use('/api/projects', projectsRouter);
+// server.use('/api/actions', actionsRouter);
 
 server.get('/', (req, res) => {
     res.send(`Jake's API Sprint Challenge!`);

@@ -1,6 +1,7 @@
 const express = require('express');
 const Project = require('../data/helpers/projectModel');
 const Action = require('../data/helpers/actionModel');
+// const { validateAction, validateProject, validateProjectId } = req
 
 const router = express.Router();
 
@@ -9,8 +10,9 @@ const router = express.Router();
 ////////////////////////////////HTTP requests//////////////////////////
 
 router.post('/', validateProject, (req, res) => {
+    const body = req.body;
 
-    Project.insert(req.body)
+    Project.insert(body)
         .then(pro => {
             res.status(201).json(pro);
         })
@@ -59,7 +61,7 @@ router.delete('/:id', validateProjectId, (req, res) => {
 
     Project.remove(id)
         .then(pro => {
-            res.status(200).end();
+            res.status(200).json({ message: 'Deleted successfully!'});
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -87,7 +89,7 @@ function validateProjectId(req, res, next) {
   Project.get(id)
     .then(pro => {
       if (pro) {
-        req.id === pro.id
+        req.id = pro.id
         next();
       } else {
         res.status(400).json({ message: "invalid user id" });
@@ -123,10 +125,12 @@ function validateProject(req, res, next) {
 ////////////////////////////////HTTP requests//////////////////////////
 
 router.post('/:id/actions', validateProjectId, validateAction, (req, res) => {
+    // const { id } = req.params;
+    const body = req.body;
 
-    Action.insert()
+    Action.insert(body)
         .then(act => {
-            res.status().json({ message: ""});
+            res.status(200).json(act);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -134,32 +138,36 @@ router.post('/:id/actions', validateProjectId, validateAction, (req, res) => {
 });
 
 router.get('/:id/actions', validateProjectId, (req, res) => {
+    const { id } = req.params;
 
-    Action.get()
+    Action.get(id)
         .then(act => {
-            res.status().json({ message: ""});
+            res.status().json(act);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
         });
 });
 
-router.delete('/:id/actions/:id', validateProjectId, (req, res) => {
+router.delete('/:pid/actions/:aid', validateProjectId, (req, res) => {
+    const { aid } = req.params;
 
-    Action.remove()
+    Action.remove(aid)
         .then(act => {
-            res.status().json({ message: ""});
+            res.status(200).json({ message: "Deleted successfully!"});
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
         });
 });
 
-router.put('/:id/actions/:id', validateProjectId, validateAction, (req, res) => {
+router.put('/:pid/actions/:aid', validateProjectId, validateAction, (req, res) => {
+    const { aid } = req.params;
+    const body = req.body;
 
-    Action.update()
+    Action.update(aid, body)
         .then(act => {
-            res.status().json({ message: ""});
+            res.status(200).json(body);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -194,14 +202,3 @@ function validateAction(req, res, next) {
 };
 
 module.exports = router;
-
-// '', (req, res) => {
-
-//     Project.insert()
-//         .then(pro => {
-//             res.status().json({ message: ""});
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: "Server error. Please try again later.", err });
-//         });
-// }
