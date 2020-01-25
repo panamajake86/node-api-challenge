@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.post('/', validateProject, (req, res) => {
 
-    Project.insert()
+    Project.insert(req.body)
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(201).json(pro);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 
     Project.get()
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(200).json(pro);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -31,10 +31,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', validateProjectId, (req, res) => {
+    const { id } = req.params;
 
-    Project.get()
+    Project.get(id)
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(200).json(pro);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -42,10 +43,11 @@ router.get('/:id', validateProjectId, (req, res) => {
 });
 
 router.get('/:id/actions', validateProjectId, (req, res) => {
+    const { id } = req.params;
 
-    Project.getProjectActions()
+    Project.getProjectActions(id)
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(200).json(pro);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -53,21 +55,24 @@ router.get('/:id/actions', validateProjectId, (req, res) => {
 });
 
 router.delete('/:id', validateProjectId, (req, res) => {
+    const { id } = req.params;
 
-    Project.remove()
+    Project.remove(id)
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(200).end();
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
         });
 });
 
-router.put('/:id', validateProject, (req, res) => {
+router.put('/:id', validateProjectId, validateProject, (req, res) => {
+    const { id } = req.params;
+    const body = req.body;
 
-    Project.update()
+    Project.update(id, body)
         .then(pro => {
-            res.status().json({ message: ""});
+            res.status(200).json(body);
         })
         .catch(err => {
             res.status(500).json({ message: "Server error. Please try again later.", err });
@@ -79,9 +84,10 @@ router.put('/:id', validateProject, (req, res) => {
 function validateProjectId(req, res, next) {
     const { id } = req.params;
 
-  Project.getById(id)
+  Project.get(id)
     .then(pro => {
-      if (req.id == pro.id) {
+      if (pro) {
+        req.id === pro.id
         next();
       } else {
         res.status(400).json({ message: "invalid user id" });
