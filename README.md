@@ -40,13 +40,24 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+1. It's like React for the backend.
+2. It makes it possible for you to use Middleware and to Route your backend.
+
 - [ ] Describe Middleware?
+
+Middleware is js functions that you can run on your HTTP requests.  You can chain Middleware together to run multiple functions before actually getting to the return of your HTTP request.
 
 - [ ] Describe a Resource?
 
+Everything is a resource. It is something that is accessable through a unique URL.  You can manage your resources through HTTP methods. 
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+The main thing it can return is a status code that will tell the user if it was successful.  .status(200)
+
 - [ ] How can we partition our application into sub-applications?
+
+Through routing.  This is done by importing and linking the router to your server and then sending all requests coming from a specific address through to that router.
 
 ## Minimum Viable Product
 
